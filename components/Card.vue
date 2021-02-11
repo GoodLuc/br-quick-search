@@ -12,7 +12,6 @@
         <h4 class="card__info__title" v-html="userData('title')"></h4>
         <address class="card__info__address"><span v-html="userData('address')"></span>, <span v-html="userData('city')"></span></address>
       </div>
-      <hr>
       <button class="card__info__mark">Mark as suitable</button>
     </div>
   </article>
@@ -26,6 +25,7 @@ export default {
   },
   computed: {
     userData: function() {
+      // Search term highlighting function
       return function(dataName) {
         if (this.highlight.length > 1) {
           return this.user[dataName].replace(new RegExp(this.highlight, "gi"), match => { return '<mark>' + match + '</mark>';
@@ -41,6 +41,7 @@ export default {
         email = email.replace(new RegExp(this.highlight, "gi"), match => { return '<mark>' + match + '</mark>';
         });
       } 
+      // Improves DOM flow by providing soft word breaks <wbr> in key places for long email addresses.
       return email.split("@").join("@<wbr>").split(".").join("<wbr>.");
     }
   }
@@ -59,12 +60,18 @@ export default {
     width: 180px;
     height: 100%;
     flex-shrink: 0;
-    img { display: block; }
+    img { 
+      display: block; 
+      min-height: 180px;
+      // Hide Alt text if can't get the image
+      text-indent: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+    }
   }
   &__info {
     padding: 1em 2em .4em;
     font-size: 14px;
-    margin-bottom: 1.4em;
     &__name { 
       color: rgba(0, 0, 0, 0.87);
       font-size: 24px;
@@ -93,7 +100,7 @@ export default {
       width: 100%;
       border-top: 1px solid rgba(0, 0, 0, 0.12);
       background: none; padding: 1em 2em;
-      text-align: left; margin: auto;
+      text-align: left; margin: auto auto 0;
     }
   }
 }

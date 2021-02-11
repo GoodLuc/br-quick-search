@@ -12,6 +12,7 @@
     "@nuxtjs/pwa": "^3.3.5",
     "core-js": "^3.8.3",
     "element-ui": "^2.15.0",
+    "lodash": "^4.17.20",
     "nuxt": "^2.14.12"
   },
   "devDependencies": {

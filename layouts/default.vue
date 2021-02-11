@@ -32,7 +32,6 @@ export default {
   watch: {
     userPool: function() {
       if (this.userPool.length) { 
-        console.log("users loaded: "+this.userPool.length)
         this.loaded = true
       } 
     }  
@@ -55,7 +54,6 @@ h2, h3 {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 }
 
@@ -70,6 +68,9 @@ h2, h3 {
 }
 .mb-md {
   margin-bottom: 1.5em;
+}
+.mt-md {
+  margin-top: 1.5em;
 }
 
 .shade {

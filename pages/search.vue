@@ -1,18 +1,27 @@
 <template>
   <div class="container search">
-    <h2>Search</h2>
-    <SearchInput class="mb-md" v-model="searchTerm" />
+    <SearchInput class="mb-md mt-md" v-model="searchTerm" />
     <div v-for="(usersPage, index) in users" :key="index" class="cards">
       <Card v-for="(user, index) in usersPage" :user="user" :highlight="searchTerm" :key="index" />
     </div>
-    <div ref="divAsTarget"><h3>Loading ... </h3></div>
-    <p>Page {{ pages }}</p>
+    <div v-if="!users.length"><p>No Results</p></div>
+    <div v-else>
+      <div v-if="isLast">
+        <p>No more results.</p>
+      </div>
+      <div v-else>
+        <h3>Loading... </h3>
+        <p>Page {{ pages }}</p>
+      </div>
+    </div>
+    <div ref="infiniteScrollObserver"></div>
   </div>
 </template>
 
 <script>
 import SearchInput from "@/components/SearchInput.vue"
 import Card from "@/components/Card.vue"
+import _ from 'lodash'
 
 export default {
 
@@ -29,9 +38,10 @@ export default {
   },
 
   mounted() {
-    this.users.push(this.$store.getters.getUserBatch(1))
-    this.observer = new IntersectionObserver(this.callback, {root: null, threshold: 0});
-    this.observer.observe(this.$refs.divAsTarget);
+    // Get the first batch of users and set the infinite scroll observer
+    this.users.push(this.$store.getters.getUserBatch(1)[0])
+    this.observer = new IntersectionObserver(this.observerCallback, {root: null, threshold: 0});
+    this.observer.observe(this.$refs.infiniteScrollObserver);
   },
 
   data() {
@@ -39,23 +49,54 @@ export default {
       pages: 1,
       searchTerm: '',
       users: [],
+      isLast: false,
       observer: null
     }
   },
 
   methods: {
-    callback(entries, observer) {
+
+    observerCallback(entries) {
+      // Load more entries
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           this.pages++
-          this.users.push(this.$store.getters.getUserBatch(this.pages))
+          let batch = this.$store.getters.getUserBatch(this.pages)
+          this.users.push(batch[0])
+          this.isLast = batch[1]
         }
       });
-    }
+    },
   },
 
-  computed: {
-  }
+  watch: {
+
+    searchTerm: _.debounce(function () {
+      this.users = []
+      this.pages = 1
+      if (this.searchTerm.length > 1) {
+        this.$store.commit("setFilteredResults", this.searchTerm)
+      } else {
+        this.$store.commit("cleanFilteredResults")
+      }
+      let batch = this.$store.getters.getUserBatch(1)
+      // Load batch of users and check if it's the last page.
+      // The getUserBatch() function returns an array which contains:
+      // [0]: The actual users array, and [1]: a boolean that informs if it's the last page of users.
+      batch[0].length ? this.users.push(batch[0]) : this.users = []
+      this.isLast = batch[1]
+    }, 1000),
+
+    users: function() {
+      // Handle scroll observer state
+      if (!this.users.length || this.isLast) {
+        this.observer.disconnect()
+      } else {
+        this.observer.observe(this.$refs.infiniteScrollObserver);
+      }
+    }
+
+  },
 
 }
 </script>
@@ -63,8 +104,5 @@ export default {
 <style lang="scss">
 .search {
   max-width: 650px;
-  &__input {
-    margin: 2em 0;
-  }
 }
 </style>
