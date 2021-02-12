@@ -1,17 +1,18 @@
 <template>
   <div class="container search">
-    <SearchInput class="mb-md mt-md" v-model="searchTerm" />
-    <div v-for="(usersPage, index) in users" :key="index" class="cards">
-      <Card v-for="(user, index) in usersPage" :user="user" :highlight="searchTerm" :key="index" />
-    </div>
-    <div v-if="!users.length"><p>No Results</p></div>
-    <div v-else>
-      <div v-if="isLast">
-        <p>No more results.</p>
+    <SearchInput ref="searchbar" class="search__bar mb-md mt-md" v-model="searchTerm" />
+    <div class="search__results">
+      <div v-for="(usersPage, index) in users" :key="index">
+        <Card v-for="(user, index) in usersPage" :user="user" :highlight="searchTerm" :key="index" />
       </div>
+      <div v-if="!users.length"><p>No Results</p></div>
       <div v-else>
-        <h3>Loading... </h3>
-        <p>Page {{ pages }}</p>
+        <div v-if="isLast">
+          <p>No more results.</p>
+        </div>
+        <div v-else>
+          <h3>Loading... </h3>
+        </div>
       </div>
     </div>
     <div ref="infiniteScrollObserver"></div>
@@ -38,10 +39,19 @@ export default {
   },
 
   mounted() {
-    // Get the first batch of users and set the infinite scroll observer
-    this.users.push(this.$store.getters.getUserBatch(1)[0])
+    this.$refs.searchbar.$el.focus();
+
+    // Set the infinite scroll observer
     this.observer = new IntersectionObserver(this.observerCallback, {root: null, threshold: 0});
     this.observer.observe(this.$refs.infiniteScrollObserver);
+    
+    if (this.$route.params.term) {
+      // Get users by search term in route
+      this.searchTerm = this.$route.params.term
+    } else {
+      // Get the first batch of unfiltered users 
+      this.users.push(this.$store.getters.getUserBatch(1)[0])
+    }
   },
 
   data() {
@@ -76,8 +86,10 @@ export default {
       this.pages = 1
       if (this.searchTerm.length > 1) {
         this.$store.commit("setFilteredResults", this.searchTerm)
+        this.$router.push(`/search/${this.searchTerm}`)
       } else {
         this.$store.commit("cleanFilteredResults")
+        this.$router.push("/search/")
       }
       let batch = this.$store.getters.getUserBatch(1)
       // Load batch of users and check if it's the last page.
@@ -104,5 +116,13 @@ export default {
 <style lang="scss">
 .search {
   max-width: 650px;
+  position: relative;
+  &__bar {
+    position: fixed;
+    max-width: 650px;
+  }
+  &__results {
+    margin-top: 120px;
+  }
 }
 </style>

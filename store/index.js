@@ -16,7 +16,7 @@ export const mutations = {
   },
   setFilteredResults(state, term) {
     // Set search results using search index array's keys
-    state.filteredResults = state.searchIndex.reduce((acc, entry, index) => (entry.includes(term) ? [...acc, index] : acc), []);
+    state.filteredResults = state.searchIndex.reduce((acc, entry, index) => (entry.includes(term.toLowerCase()) ? [...acc, index] : acc), []);
     // Flag if it's an empty result set
     if (!state.filteredResults.length) { state.noResults = true } else { state.noResults = false }
   },
@@ -70,7 +70,7 @@ export const actions = {
     if (response.ok) {
       let users = await response.json();
       // Create a separate array with only strings as a search index for efficiency
-      let searchIndex = users.map(user => user.name+'~'+user.title+'~'+user.email+'~'+user.address+'~'+user.city)
+      let searchIndex = users.map(user => (user.name+'~'+user.title+'~'+user.email+'~'+user.address+'~'+user.city).toLowerCase())
       commit("setSearchIndex", searchIndex)
       commit("setUserPool", users)
     } else {
