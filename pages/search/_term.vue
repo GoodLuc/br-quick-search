@@ -1,6 +1,6 @@
 <template>
   <div class="container search">
-    <SearchInput ref="searchbar" class="search__bar mb-md mt-md" v-model="searchTerm" />
+    <SearchInput ref="searchbar" class="search__bar" v-model="searchTerm" />
     <div class="search__results">
       <div v-for="(usersPage, index) in users" :key="index">
         <Card v-for="(user, index) in usersPage" :user="user" :highlight="searchTerm" :key="index" />
@@ -120,9 +120,10 @@ export default {
   &__bar {
     position: fixed;
     max-width: 650px;
+    z-index: 10;
   }
   &__results {
-    margin-top: 120px;
+    margin-top: 70px;
   }
 }
 </style>

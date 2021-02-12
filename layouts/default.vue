@@ -40,6 +40,7 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
 body {
   font-family: 'Roboto', sans-serif;
+  background: #fafafa;
 }
 img { max-width: 100%; }
 h2, h3 {
@@ -52,6 +53,8 @@ h2, h3 {
   display: flex;
   flex-direction: column;
   align-items: center;
+  background: white;
+  padding: 1em;
 }
 
 .flex {
