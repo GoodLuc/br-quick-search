@@ -19,5 +19,6 @@ input {
   color: rgba(0, 0, 0, 0.75);
   padding: 0.5em .5em .5em 2em;
   border: none;
+  &:focus { outline: none; }
 }
 </style>

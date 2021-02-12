@@ -38,18 +38,24 @@ export default {
 
 <style lang="scss">
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
+
 body {
   font-family: 'Roboto', sans-serif;
-  background: #fafafa;
+  background: #eeeeee;
+  margin: 0;
+  overflow-y: hidden;
 }
+
+::-webkit-scrollbar-track { border: 2px solid white; background-color: #b2bec3; }
+::-webkit-scrollbar { width: 6px; background-color: rgba(77, 77, 77, 1); }
+::-webkit-scrollbar-thumb { background-color: rgba(77, 77, 77, 1); border-radius: 3px; }
+
 img { max-width: 100%; }
-h2, h3 {
-  font-weight: 200;
-}
+h2, h3 { font-weight: 200; }
 
 .container {
   margin: 0 auto;
-  min-height: 100vh;
+  height: calc(100vh - 4em);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -63,15 +69,11 @@ h2, h3 {
   &.justify_between { justify-content: space-between; }
   &.wrap { flex-wrap: wrap ;}
 }
-.w100 {
-  width: 100%;
-}
-.mb-md {
-  margin-bottom: 1.5em;
-}
-.mt-md {
-  margin-top: 1.5em;
-}
+.w100 { width: 100%; }
+.mb-md { margin-bottom: 1.5em; }
+.mt-md { margin-top: 1.5em; }
+
+.text-center { text-align: center; }
 
 .shade {
   border-radius: 3px;

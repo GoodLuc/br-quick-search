@@ -1,21 +1,23 @@
 <template>
-  <div class="container search">
-    <SearchInput ref="searchbar" class="search__bar" v-model="searchTerm" />
-    <div class="search__results">
-      <div v-for="(usersPage, index) in users" :key="index">
-        <Card v-for="(user, index) in usersPage" :user="user" :highlight="searchTerm" :key="index" />
-      </div>
-      <div v-if="!users.length"><p>No Results</p></div>
-      <div v-else>
-        <div v-if="isLast">
-          <p>No more results.</p>
+  <div class="container">
+    <div class="search">
+      <SearchInput ref="searchbar" class="search__bar" v-model="searchTerm" />
+      <div class="search__results">
+        <div v-for="(usersPage, index) in users" :key="index">
+          <Card v-for="(user, index) in usersPage" :user="user" :highlight="searchTerm" :key="index" />
         </div>
+        <div v-if="!users.length" class="text-center"><p>No Results</p></div>
         <div v-else>
-          <h3>Loading... </h3>
+          <div v-if="isLast" class="text-center">
+            <p>No more results.</p>
+          </div>
+          <div v-else class="text-center">
+            <h3>Loading... </h3>
+          </div>
         </div>
       </div>
+      <div ref="infiniteScrollObserver"></div>
     </div>
-    <div ref="infiniteScrollObserver"></div>
   </div>
 </template>
 
@@ -113,9 +115,19 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+body {
+  overflow-y: hidden;
+}
+.container {
+  margin-top: 1em;
+  padding: 1.5em 1.5em 0; 
+  max-width: 650px; 
+}
 .search {
-  max-width: 650px;
+  overflow-y: auto;
+  height: 100vh;
+  padding-right: .9em;
   position: relative;
   &__bar {
     position: fixed;
