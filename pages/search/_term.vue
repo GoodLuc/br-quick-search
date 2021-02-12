@@ -129,7 +129,7 @@ body {
   height: 100vh;
   padding-right: .9em;
   position: relative;
-  width: 650px;
+  width: 655px;
   &__bar {
     position: fixed;
     max-width: 650px;
